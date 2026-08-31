@@ -1,0 +1,44 @@
+﻿
+CREATE TABLE ROLES (
+    Id          BIGINT PRIMARY KEY IDENTITY(1,1),
+    Name            VARCHAR(50) NOT NULL UNIQUE,
+    Description     TEXT,
+    IsActive    BIT DEFAULT 1,
+	Created_at  DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+);
+
+
+CREATE TABLE USERS (
+    Id          BIGINT PRIMARY KEY IDENTITY(1,1),
+    FirstName   VARCHAR(50),
+    LastName    VARCHAR(50),
+    Email       VARCHAR(255) NOT NULL,
+    Phone       VARCHAR(30),
+    Password    VARCHAR(255) NOT NULL,
+    IsActive    BIT DEFAULT 1,
+	RoleId BIGINT,
+    Created_at  DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Updated_at  DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT uq_users_email UNIQUE (Email),
+    CONSTRAINT uq_users_phone UNIQUE (Phone),
+	CONSTRAINT fk_role FOREIGN KEY (RoleId) REFERENCES ROLES(Id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE USER_DETAILS (
+     Id          BIGINT PRIMARY KEY IDENTITY(1,1),
+    User_Id         BIGINT NOT NULL,
+    Address_Line_1  VARCHAR(255) NOT NULL,
+    Address_Line_2  VARCHAR(255),
+    City            VARCHAR(100),
+    State           VARCHAR(100),
+    Postal_code     VARCHAR(30),
+    Country         VARCHAR(100) NOT NULL,
+    Created_at  DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Updated_at  DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  	CONSTRAINT fk_userdetail FOREIGN KEY (User_Id) REFERENCES USERS(Id) ON DELETE CASCADE
+
+);
