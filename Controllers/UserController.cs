@@ -11,7 +11,6 @@ namespace ERP.Controllers
 		{
 		}
 
-
 		[HttpGet]
 		[Route("abhishek")]
 		public void GetUser()
