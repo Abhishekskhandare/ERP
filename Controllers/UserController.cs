@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ERP.Agent;
+using ERP.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERP.Controllers
@@ -11,12 +13,23 @@ namespace ERP.Controllers
 		{
 		}
 
-		[HttpGet]
-		[Route("abhishek")]
-		public void GetUser()
+		[HttpPost]
+		[Route("register")]
+		public Result Register(DTOUserRegister userRegister)
 		{
+			Result result = new Result();
+			try
+			{
+				UserAgent agent = new UserAgent();
+				result.Success = agent.Register(userRegister);
+			}
+			catch (Exception ex)
+			{
+				result.Success = false;
+				result.Message = ex.Message;
+			}
 
-			// Implementation for getting user
+			return result;
 		}
 	}
 }
