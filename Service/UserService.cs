@@ -1,25 +1,32 @@
 ﻿
 using ERP.Data;
 using ERP.EFModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP.Service
 {
 	public class UserService
 	{
-		public bool IsUserExist(string email)
-		{
-			ERPContext context = new ERPContext();
-			User? user =  context.Users.FirstOrDefault(u => u.Email == email);
-			if (user == null)
-			{
-				return false;
-			}
-			else
-			{
-				if (user.IsActive == true) { return true; }
-				else return false;
-			}
+		ERPContext context = new ERPContext();
 
+		public async Task<User?> GetUserByEmail(string email)
+		{
+			User? user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+			return user;
+		}
+
+		public async Task<bool> CreateUser(User user, UserDetail detail)
+		{
+			context.Add(user);
+			context.SaveChanges();
+			User? newUser = await GetUserByEmail(user.Email);
+			if(newUser != null)
+			{
+				detail.UserId = newUser.Id;
+				context.Add(detail);
+				context.SaveChanges();
+			}
+			return true;
 		}
 	}
 }

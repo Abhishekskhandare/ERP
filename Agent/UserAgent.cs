@@ -1,15 +1,20 @@
 ﻿using ERP.DTO;
 using ERP.EFModels;
 using ERP.Service;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace ERP.Agent
 {
 	public class UserAgent
 	{
-		public bool Register(DTOUserRegister userRegister)
+		public async Task<bool> Register(DTOUserRegister userRegister)
 		{
 			try
 			{
+
+				bool isValidate = await IsRegisterValidate(userRegister);
+				if(!isValidate) throw new Exception("Validation failed.");
+
 				UserService service  = new UserService();
 				User user = new User
 				{
@@ -33,27 +38,36 @@ namespace ERP.Agent
 				detail.CreatedAt = DateTime.Now;
 				detail.UpdatedAt = DateTime.Now;
 
-				if(service.IsUserExist(user.Email))
+
+				User? existingUser = await service.GetUserByEmail(user.Email);
+				if (existingUser != null)
 				{
-					//if(IsUserActive(user.Email)))
-					//{
-					//	// user already exist
-					//}
-					//else
-					//{
-					//	// user is inactive plz connect with Admin to activate yourself.
-					//}
+					if(existingUser.IsActive == true)
+					{
+						throw new Exception("User already exists.");
+					}
+					else
+					{
+						throw new Exception("User is inactive please connect with Admin to activate yourself.");
+					}
 				}
+				return await service.CreateUser(user, detail);
 
 			}
 			catch (Exception ex)
 			{
 				throw;
 			}
-
-
-			return true;
-		
 		}
+		#region Private
+
+		// validation by saurabh
+		private async Task<bool> IsRegisterValidate(DTOUserRegister userRegister)
+		{
+			return true;
+			//throw new NotImplementedException();
+		}
+
+		#endregion
 	}
 }

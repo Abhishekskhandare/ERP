@@ -15,13 +15,13 @@ namespace ERP.Controllers
 
 		[HttpPost]
 		[Route("register")]
-		public Result Register(DTOUserRegister userRegister)
+		public async Task<Result> Register(DTOUserRegister userRegister)
 		{
 			Result result = new Result();
 			try
 			{
 				UserAgent agent = new UserAgent();
-				result.Success = agent.Register(userRegister);
+				result.Success = await agent.Register(userRegister);
 			}
 			catch (Exception ex)
 			{
@@ -31,5 +31,10 @@ namespace ERP.Controllers
 
 			return result;
 		}
+
+
+		// change password   -  rutuja
+
+		// login   -- aniket
 	}
 }
