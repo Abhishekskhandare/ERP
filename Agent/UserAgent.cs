@@ -1,5 +1,5 @@
 ﻿using ERP.DTO;
-using ERP.EFModels;
+using ERP.Models;
 using ERP.Service;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -7,6 +7,17 @@ namespace ERP.Agent
 {
 	public class UserAgent
 	{
+		private readonly ERP.Data.ERPDbContext? _context;
+
+		public UserAgent()
+		{
+		}
+
+		public UserAgent(ERP.Data.ERPDbContext context)
+		{
+			_context = context;
+		}
+
 		public async Task<bool> Register(DTOUserRegister userRegister)
 		{
 			try
@@ -15,7 +26,11 @@ namespace ERP.Agent
 				bool isValidate = await IsRegisterValidate(userRegister);
 				if(!isValidate) throw new Exception("Validation failed.");
 
-				UserService service  = new UserService();
+				UserService service;
+				if (_context != null)
+					service = new UserService(_context);
+				else
+					service = new UserService();
 				User user = new User
 				{
 					FirstName = userRegister.FirstName,

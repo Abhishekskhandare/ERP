@@ -1,30 +1,42 @@
 ﻿
 using ERP.Data;
-using ERP.EFModels;
+using ERP.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ERP.Service
 {
 	public class UserService
 	{
-		ERPContext context = new ERPContext();
+		private readonly ERPDbContext _context;
+
+		// Constructor for DI - preferred
+		public UserService(ERPDbContext context)
+		{
+			_context = context;
+		}
+
+		// Parameterless constructor fallback (not recommended)
+		public UserService()
+		{
+			_context = new ERPDbContext();
+		}
 
 		public async Task<User?> GetUserByEmail(string email)
 		{
-			User? user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+			User? user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 			return user;
 		}
 
 		public async Task<bool> CreateUser(User user, UserDetail detail)
 		{
-			context.Add(user);
-			context.SaveChanges();
+			_context.Add(user);
+			await _context.SaveChangesAsync();
 			User? newUser = await GetUserByEmail(user.Email);
-			if(newUser != null)
+			if (newUser != null)
 			{
 				detail.UserId = newUser.Id;
-				context.Add(detail);
-				context.SaveChanges();
+				_context.Add(detail);
+				await _context.SaveChangesAsync();
 			}
 			return true;
 		}
