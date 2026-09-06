@@ -9,6 +9,7 @@ namespace ERP.Agent
 		public async Task<bool> Register(DTOUserRegister userRegister)
 		{
 			try
+
 			{
 
 				bool isValidate = await IsRegisterValidate(userRegister);
