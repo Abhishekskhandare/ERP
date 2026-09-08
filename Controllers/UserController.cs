@@ -44,8 +44,7 @@ namespace ERP.Controllers
             Result result = new Result();
             try
             {
-                UserAgent agent = new UserAgent();
-                User user = await agent.Login(userLogin);
+                User user = await _agent.Login(userLogin);
                 result.Success = true;
                 result.Data = new
                 {
