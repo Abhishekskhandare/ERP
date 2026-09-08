@@ -1,7 +1,6 @@
 ﻿using ERP.DTO;
 using ERP.EFModels;
 using ERP.Service;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace ERP.Agent
 {
@@ -64,15 +63,60 @@ namespace ERP.Agent
 				throw;
 			}
 		}
-		#region Private
 
-		// validation by saurabh
-		private async Task<bool> IsRegisterValidate(DTOUserRegister userRegister)
+
+
+        // login -- aniket
+        public async Task<User> Login(DTOUserLogin userLogin)
+        {
+            try
+            {
+                bool isValidate = await IsLoginValidate(userLogin);
+                if (!isValidate) throw new Exception("Validation failed.");
+
+                UserService service = new UserService();
+                User? existingUser = await service.GetUserByEmail(userLogin.Email);
+
+                if (existingUser == null || existingUser.Password != userLogin.Password)
+                {
+                    throw new Exception("Invalid email or password.");
+                }
+
+                if (existingUser.IsActive != true)
+                {
+                    throw new Exception("User is inactive please connect with Admin to activate yourself.");
+                }
+
+                return existingUser;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        #region Private
+
+        // validation by saurabh
+        private async Task<bool> IsRegisterValidate(DTOUserRegister userRegister)
 		{
 			return true;
 			//throw new NotImplementedException();
 		}
 
-		#endregion
-	}
+
+        //private async Task<bool> IsLoginValidate(DTOUserLogin userLogin)
+        //{
+        //    if (string.IsNullOrWhiteSpace(userLogin.Email) || string.IsNullOrWhiteSpace(userLogin.Password))
+        //        return false;
+
+        //    return true;
+        //}
+
+
+        private async Task<bool> IsLoginValidate(DTOUserLogin userLogin)
+		{ if (string.IsNullOrWhiteSpace(userLogin.Email)) { throw new Exception("Email is required."); }
+			if (string.IsNullOrWhiteSpace(userLogin.Password)) { throw new Exception("Password is required."); } return true; }
+        #endregion
+    }
 }

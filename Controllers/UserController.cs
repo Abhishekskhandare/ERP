@@ -1,5 +1,6 @@
 ﻿using ERP.Agent;
 using ERP.DTO;
+using ERP.EFModels;
 using ERP.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,8 +37,36 @@ namespace ERP.Controllers
 		}
 
 
-		// change password   -  rutuja
+        [HttpPost]
+        [Route("login")]
+        public async Task<Result> Login(DTOUserLogin userLogin)
+        {
+            Result result = new Result();
+            try
+            {
+                UserAgent agent = new UserAgent();
+                User user = await agent.Login(userLogin);
+                result.Success = true;
+                result.Data = new
+                {
+                    user.Id,
+                    user.FirstName,
+                    user.LastName,
+                    user.Email,
+                    user.Phone,
+                    user.RoleId
+                };
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = ex.Message;
+            }
 
-		// login   -- aniket
-	}
+            return result;
+        }
+        // change password   -  rutuja
+
+        // login   -- aniket
+    }
 }
