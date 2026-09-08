@@ -1,5 +1,6 @@
 ﻿using ERP.Agent;
 using ERP.DTO;
+using ERP.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +10,11 @@ namespace ERP.Controllers
 	[ApiController]
 	public class UserController : ControllerBase
 	{
-		public UserController()
+		private readonly IUserAgent _agent;
+
+		public UserController(IUserAgent agent)
 		{
+			_agent = agent;
 		}
 
 		[HttpPost]
@@ -20,8 +24,7 @@ namespace ERP.Controllers
 			Result result = new Result();
 			try
 			{
-				UserAgent agent = new UserAgent();
-				result.Success = await agent.Register(userRegister);
+				result.Success = await _agent.Register(userRegister);
 			}
 			catch (Exception ex)
 			{

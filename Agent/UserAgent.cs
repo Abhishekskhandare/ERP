@@ -5,9 +5,15 @@ using Microsoft.AspNetCore.Components.Forms;
 
 namespace ERP.Agent
 {
-	public class UserAgent
+    public class UserAgent  : IUserAgent
 	{
-		public async Task<bool> Register(DTOUserRegister userRegister)
+		private readonly IUserService _service;
+        public UserAgent(IUserService service)
+        {
+			_service = service;
+
+		}
+        public async Task<bool> Register(DTOUserRegister userRegister)
 		{
 			try
 			{
@@ -15,7 +21,6 @@ namespace ERP.Agent
 				bool isValidate = await IsRegisterValidate(userRegister);
 				if(!isValidate) throw new Exception("Validation failed.");
 
-				UserService service  = new UserService();
 				User user = new User
 				{
 					FirstName = userRegister.FirstName,
@@ -39,7 +44,7 @@ namespace ERP.Agent
 				detail.UpdatedAt = DateTime.Now;
 
 
-				User? existingUser = await service.GetUserByEmail(user.Email);
+				User? existingUser = await _service.GetUserByEmail(user.Email);
 				if (existingUser != null)
 				{
 					if(existingUser.IsActive == true)
@@ -51,7 +56,7 @@ namespace ERP.Agent
 						throw new Exception("User is inactive please connect with Admin to activate yourself.");
 					}
 				}
-				return await service.CreateUser(user, detail);
+				return await _service.CreateUser(user, detail);
 
 			}
 			catch (Exception ex)
