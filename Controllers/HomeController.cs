@@ -6,7 +6,8 @@ namespace ERP.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	//[Authorize]
+	[Authorize]
+
 	public class HomeController : ControllerBase
 	{
 		public HomeController() { }
