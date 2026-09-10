@@ -10,6 +10,7 @@ namespace ERP.Service {
         public async Task<User?> GetUserByEmail(string email)
         {
             User? user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null) { user.Role = await context.Roles.FirstOrDefaultAsync(r => r.Id == user.RoleId); }
             return user;
         }
 
