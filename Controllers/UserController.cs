@@ -9,7 +9,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using ERP.Helper;
 
 namespace ERP.Controllers
 {
@@ -43,27 +49,28 @@ namespace ERP.Controllers
 		}
 
 
-        [HttpPost]
-        [Route("login")]
-        public async Task<Result> Login(DTOUserLogin userLogin)
-        {
-            Result result = new Result();
-            try
-            {
-                User user = await _agent.Login(userLogin);
+		[HttpPost]
+		[Route("login")]
+		public async Task<Result> Login(DTOUserLogin userLogin)
+		{
+			Result result = new Result();
+			try
+			{
+
+				User user = await _agent.Login(userLogin);
 
 				string token = await GenerateToken(user);
 				result.Success = true;
 				result.Data = token;
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.Message = ex.Message;
-            }
+			}
+			catch (Exception ex)
+			{
+				result.Success = false;
+				result.Message = ex.Message;
+			}
 
-            return result;
-        }
+			return result;
+		}
 
 
 
@@ -89,8 +96,19 @@ namespace ERP.Controllers
 
 			return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
 		}
-			// change password   -  rutuja
+		// change password   -  rutuja
 
-			// login   -- aniket
-		}
+
+
+		// login   -- aniket
+	}
 }
+
+
+
+
+
+
+
+
+

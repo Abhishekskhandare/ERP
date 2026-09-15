@@ -1,5 +1,6 @@
 ﻿using ERP.DTO;
 using ERP.EFModels;
+using ERP.Helper;
 using ERP.Service;
 
 namespace ERP.Agent
@@ -55,6 +56,7 @@ namespace ERP.Agent
 						throw new Exception("User is inactive please connect with Admin to activate yourself.");
 					}
 				}
+				user.Password = AesHelper.EncryptString(user.Password);
 				return await _service.CreateUser(user, detail);
 
 			}
@@ -76,8 +78,9 @@ namespace ERP.Agent
 
                 UserService service = new UserService();
                 User? existingUser = await service.GetUserByEmail(userLogin.Email);
+				userLogin.Password = AesHelper.EncryptString(userLogin.Password);
 
-                if (existingUser == null || existingUser.Password != userLogin.Password)
+				if (existingUser == null || existingUser.Password != userLogin.Password)
                 {
                     throw new Exception("Invalid email or password.");
                 }
