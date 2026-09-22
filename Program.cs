@@ -1,4 +1,5 @@
 using ERP.Agent;
+using ERP.Middleware;
 using ERP.Service;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,6 +83,7 @@ app.UseSwaggerUI(options =>
 });
 
 app.UseHttpsRedirection();
+app.UseMiddleware<LogMiddleware>();
 
 app.UseAuthorization();
 

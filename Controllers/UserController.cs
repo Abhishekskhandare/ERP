@@ -16,6 +16,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using ERP.Helper;
+using System.Collections;
 
 namespace ERP.Controllers
 {
@@ -32,7 +33,7 @@ namespace ERP.Controllers
 
 		[HttpPost]
 		[Route("register")]
-		public async Task<Result> Register(DTOUserRegister userRegister)
+		public async Task<IActionResult> Register(DTOUserRegister userRegister)
 		{
 			Result result = new Result();
 			try
@@ -45,13 +46,13 @@ namespace ERP.Controllers
 				result.Message = ex.Message;
 			}
 
-			return result;
+			return Ok(result);
 		}
 
 
 		[HttpPost]
 		[Route("login")]
-		public async Task<Result> Login(DTOUserLogin userLogin)
+		public async Task<IActionResult> Login(DTOUserLogin userLogin)
 		{
 			Result result = new Result();
 			try
@@ -69,7 +70,8 @@ namespace ERP.Controllers
 				result.Message = ex.Message;
 			}
 
-			return result;
+			return Ok(result);
+
 		}
 
 
